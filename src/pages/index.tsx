@@ -79,9 +79,12 @@ export default function Homepage() {
 
       player.setVolume(initialVolume);
 
-      if (initialVolume <= 0) {
+      if (initialVolume <= 0 && type === "out") {
         clearInterval(fade);
         player.setVolume(0);
+      } else if (initialVolume >= 1 && type === "in") {
+        clearInterval(fade);
+        player.setVolume(1);
       };
     }, intervalTime);
   };
