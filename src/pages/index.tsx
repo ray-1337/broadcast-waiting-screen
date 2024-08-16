@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useAudioPlayer, type AudioPlayer } from 'react-use-audio-player';
 import { useRouter } from "next/router";
 import ms from "ms";
@@ -13,6 +13,8 @@ const waitTitle: string = "A special multi-platform broadcast, presented by ray"
 
 const currentSceneNameAfterAwait: string = "🎮 VALORANT MAIN";
 
+const promotionStartInBelowTime: number = ms("3m");
+
 export default function Homepage() {
   const audioPlayer = useAudioPlayer();
   const router = useRouter();
@@ -20,6 +22,7 @@ export default function Homepage() {
   // in minutes
   const [isFinished, setFinishedState] = useState<boolean>(false);
   const [timerStarted, setTimerStartState] = useState<boolean>(false);
+  const [initialTime, setInitialTime] = useState<number | null>(null)
   const [currentTime, setCurrentTime] = useState<number>(0);
   
   // songs
@@ -27,6 +30,12 @@ export default function Homepage() {
   const [currentSong, setCurrentSong] = useState<Record<"artist" | "title", string> | null>(null);
   const [previousSongIndex, setPrevSongIndex] = useState<number | null>(null);
   const [isSongChanged, setSongChangeState] = useState<boolean>(false);
+
+  // promotion videos
+  const [promotionVideos, setPromotionVideos] = useState<string[]>([]);
+  const [currentPromotionVideo, setCurrentPromotionVideo] = useState<string | null>(null);
+  const [isPromotionPlayed, setPromotionPlayState] = useState<boolean>(false);
+  const [isPromotionFinished, setPromotionFinishState] = useState<boolean>(false);
 
   const getRandomSongIndex = () => {
     let newNum: number = 0;
@@ -77,6 +86,23 @@ export default function Homepage() {
     }, intervalTime);
   };
 
+  const playPromotionVideo = () => {
+    const randomPromotionVideo = promotionVideos[getRandomIntInclusive(0, promotionVideos.length - 1)];
+
+    setPromotionPlayState(true);
+    setCurrentPromotionVideo(randomPromotionVideo);
+
+    fadeAudio(audioPlayer, "out", 20);
+
+    return;
+  };
+
+  const finishPromotionVideo = () => {
+    setPromotionFinishState(true);
+
+    fadeAudio(audioPlayer, "in");
+  };
+
   useEffect(() => {
     if (currentSong !== null) {
       setTimeout(() => setSongChangeState(true), 2500);
@@ -89,14 +115,29 @@ export default function Homepage() {
     };
   }, [isSongChanged]);
 
+  // initial time check
+  useEffect(() => {
+    if (initialTime !== null) {
+      // if the timeout is more than 10 minutes, the person who waits will be watching one of my videos :)
+      if (initialTime >= promotionStartInBelowTime) {
+        fetch("/api/promotion_videos", { method: "GET" })
+        .then(x => x.json())
+        .then(x => setPromotionVideos(x));
+      };
+    };
+  }, [initialTime]);
+
   useEffect(() => {
     // time register
     setTimeout(() => {
       const timeWait = new URLSearchParams(router.asPath.split('?')[1])?.get("timewait");
       let numTimeWait = timeWait !== null ? ((isNaN(+timeWait) || +timeWait < 1) ? 2 : +timeWait) : 2;
+
+      const initialTime = ms(`${numTimeWait}m`);
+      setInitialTime(initialTime);
     
-      setTimeout(() => setCurrentTime(ms(`${numTimeWait}m`)), ms("1s"));
-    }, 1000);
+      setTimeout(() => setCurrentTime(initialTime), ms("1s"));
+    }, 2000);
 
     // cleanup
     try {
@@ -128,6 +169,7 @@ export default function Homepage() {
       return;
     };
 
+    // times ticking
     if (currentTime > 0 && timerStarted !== true) {
       setTimerStartState(true);
 
@@ -139,6 +181,11 @@ export default function Homepage() {
         return setCurrentTime((prev) => prev - 1000);
       }, ms("1s"));
     };
+
+    // promotion video
+    if (currentTime <= promotionStartInBelowTime && !isPromotionPlayed && promotionVideos.length > 0) {
+      playPromotionVideo();
+    };
   }, [currentTime]);
 
   // if songs fetched successfully, play all of them
@@ -149,34 +196,57 @@ export default function Homepage() {
   }, [songs]);
 
   return (
-    <section className={"frontpage"} data-finished={isFinished} data-started={currentSong !== null}>
-      {/* transition */}
-      <div className={"transition"} data-active={isFinished}/>
-
-      {/* details */}
-      <section className={"details"} data-active={currentSong !== null}>
-        <div className={"details_box"}>
-          {/* timer */}
-          <div className={"timer"}>
-            <h6>{waitTitle}</h6>
-
+    <Fragment>
+      {/* promotion screen // ONLY OCCURS WHEN THE INITIAL TIME IS ABOVE 10 MINS */}
+      <section className={"promotion"} data-active={!isPromotionFinished && currentPromotionVideo !== null}>
+        <section className={"promotion-timer-container"}>
+          <div className={"promotion-timer"}>
+            <p>Starting in</p>
             <h1>{new Date(currentTime <= 0 ? 0 : currentTime).toISOString().slice(11, 19)}</h1>
           </div>
-          
-          {/* now playing */}
-          <div className={"nowplaying"} data-changed={currentTime >= ms("10s") && isSongChanged} data-disappear-if={currentTime <= ms("3s")} data-active={audioPlayer.paused === false || currentSong !== null}>
-            <h6>Now playing</h6>
-            <p>{currentSong?.artist} - {currentSong?.title?.split(".mp3")?.[0]?.replace(/\꞉/gim, ":")}</p>
-          </div>
-        </div>
+        </section>
+
+        <section className={"promotion-video"}>
+          {
+            currentPromotionVideo !== null && (
+              <video onEnded={() => setTimeout(() => finishPromotionVideo(), ms("2s"))} controls={false} draggable={false} autoPlay={true} loop={false} muted={false} playsInline={true} disablePictureInPicture={true}>
+                <source src={"/promotion_videos/" + currentPromotionVideo} type="video/mp4"/>
+              </video>
+            )
+          }
+        </section>
       </section>
 
-      {/* video */}
-      <section className={"video"}>
-        <video controls={false} draggable={false} autoPlay={true} loop={true} muted={true} playsInline={true} disablePictureInPicture={true}>
-          <source src={`loading_room_screen_02.mp4?s=${Date.now()}#t=${getRandomIntInclusive(1, 14)}`} type="video/mp4"/>
-        </video>
+      {/* main screen */}
+      <section className={"frontpage"} data-disappear-if={isPromotionPlayed && !isPromotionFinished} data-finished={isFinished} data-started={currentSong !== null}>
+        {/* transition */}
+        <div className={"transition"} data-active={isFinished}/>
+
+        {/* details */}
+        <section className={"details"} data-active={currentSong !== null}>
+          <div className={"details_box"}>
+            {/* timer */}
+            <div className={"timer"}>
+              <h6>{waitTitle}</h6>
+
+              <h1>{new Date(currentTime <= 0 ? 0 : currentTime).toISOString().slice(11, 19)}</h1>
+            </div>
+            
+            {/* now playing */}
+            <div className={"nowplaying"} data-changed={currentTime >= ms("10s") && isSongChanged} data-disappear-if={currentTime <= ms("3s")} data-active={audioPlayer.paused === false || currentSong !== null}>
+              <h6>Now playing</h6>
+              <p>{currentSong?.artist} - {currentSong?.title?.split(".mp3")?.[0]?.replace(/\꞉/gim, ":")}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* video */}
+        <section className={"video"}>
+          <video controls={false} draggable={false} autoPlay={true} loop={true} muted={true} playsInline={true} disablePictureInPicture={true}>
+            <source src={`loading_room_screen_02.mp4?s=${Date.now()}#t=${getRandomIntInclusive(1, 14)}`} type="video/mp4"/>
+          </video>
+        </section>
       </section>
-    </section>
+    </Fragment>
   );
 };
