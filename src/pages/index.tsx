@@ -58,12 +58,16 @@ export default function Homepage() {
     return;
   };
 
-  const fadeOutAudio = (player: AudioPlayer) => {
+  const fadeAudio = (player: AudioPlayer, type: "in" | "out", intervalTime = 50) => {
     let initialVolume = player.volume;
-    const intervalTime = 50;
 
     const fade = setInterval(() => {
-      initialVolume -= 0.01;
+      if (type === "in") {
+        initialVolume += 0.01;
+      } else if (type === "out") {
+        initialVolume -= 0.01;
+      };
+
       player.setVolume(initialVolume);
 
       if (initialVolume <= 0) {
@@ -106,8 +110,9 @@ export default function Homepage() {
   }, []);
 
   useEffect(() => {
+    // time out, change scene
     if (currentTime <= ms("4s") && timerStarted === true) {
-      fadeOutAudio(audioPlayer);
+      fadeAudio(audioPlayer, "out");
 
       setTimeout(() => {
         setFinishedState(true);
