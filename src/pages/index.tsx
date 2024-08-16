@@ -213,7 +213,7 @@ export default function Homepage() {
         <section className={"promotion-video"}>
           {
             currentPromotionVideo !== null && (
-              <video onEnded={() => setTimeout(() => finishPromotionVideo(), ms("2s"))} controls={false} draggable={false} autoPlay={true} loop={false} muted={false} playsInline={true} disablePictureInPicture={true}>
+              <video onEnded={finishPromotionVideo} controls={false} draggable={false} autoPlay={true} loop={false} muted={false} playsInline={true} disablePictureInPicture={true}>
                 <source src={"/promotion_videos/" + currentPromotionVideo} type="video/mp4"/>
               </video>
             )
