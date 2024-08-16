@@ -186,6 +186,10 @@ export default function Homepage() {
     if (currentTime <= promotionStartInBelowTime && !isPromotionPlayed && promotionVideos.length > 0) {
       playPromotionVideo();
     };
+
+    if (currentTime <= ms("10s") && isPromotionPlayed && !isPromotionFinished) {
+      finishPromotionVideo();
+    };
   }, [currentTime]);
 
   // if songs fetched successfully, play all of them
