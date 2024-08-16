@@ -97,6 +97,8 @@ export default function Homepage() {
 
     fadeAudio(audioPlayer, "out", 20);
 
+    setTimeout(() => audioPlayer.pause(), ms("3s"));
+
     return;
   };
 
