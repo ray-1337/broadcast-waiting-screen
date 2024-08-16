@@ -105,7 +105,12 @@ export default function Homepage() {
   const finishPromotionVideo = () => {
     setPromotionFinishState(true);
 
-    fadeAudio(audioPlayer, "in");
+    // ew
+    setTimeout(() => audioPlayer.play(), 1000);
+    setTimeout(() => audioPlayer.setVolume(0), 1002);
+    setTimeout(() => fadeAudio(audioPlayer, "in"), 1005);
+    
+    return;
   };
 
   useEffect(() => {
