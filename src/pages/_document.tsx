@@ -7,9 +7,6 @@ export default function Document() {
 
       <link rel="preconnect" href="https://cdn.fontshare.com/wf/" crossOrigin={"anonymous"}/>
       <link rel="preconnect" href="https://api.fontshare.com" crossOrigin={"anonymous"}/>
-
-      <link rel="preload" href={"/preview.css"} as={"style"}/>
-      <link rel="stylesheet" href={"/preview.css"} as={"style"}/>
       <body>
         <Main />
         <NextScript />

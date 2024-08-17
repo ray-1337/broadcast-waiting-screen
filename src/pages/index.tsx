@@ -211,6 +211,9 @@ export default function Homepage() {
 
   return (
     <Fragment>
+      <link rel="preload" href={"/unstabilized_css/index.css"} as={"style"}/>
+      <link rel="stylesheet" href={"/unstabilized_css/index.css"} as={"style"}/>
+      
       {/* promotion screen // ONLY OCCURS WHEN THE INITIAL TIME IS ABOVE 10 MINS */}
       <section className={"promotion"} data-active={!isPromotionFinished && currentPromotionVideo !== null}>
         <section className={"promotion-timer-container"}>
