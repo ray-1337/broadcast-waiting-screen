@@ -14,7 +14,8 @@
     "normalize.css": "^8.0.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-use-audio-player": "^2.2.0"
+    "react-use-audio-player": "^2.2.0",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@types/ms": "^0.7.34",
