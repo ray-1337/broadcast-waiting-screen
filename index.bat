@@ -1,3 +1,3 @@
 @echo off
-pnpm start
+pnpm concurrently "pnpm start" "pnpm node ./medialive/start.js"
 pause
