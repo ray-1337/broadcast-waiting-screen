@@ -263,7 +263,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
             </div>
             
             {/* now playing */}
-            <div className={"nowplaying"} data-changed={currentTime >= ms("10s") && isSongChanged} data-disappear-if={currentTime <= ms("3s")} data-active={audioPlayer.paused === false || currentSong !== null}>
+            <div className={"nowplaying"} data-changed={currentTime >= ms("10s") && isSongChanged} data-disappear-if={currentTime <= ms("3s")} data-active={currentSong !== null}>
               <h6>Now playing</h6>
               <p>{currentSong?.artist} - {currentSong?.title?.split(".mp3")?.[0]?.replace(/\꞉/gim, ":")}</p>
             </div>
