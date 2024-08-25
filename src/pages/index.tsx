@@ -30,7 +30,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   
   // songs
   const songs = props.waiting_audios;
-  const [currentSong, setCurrentSong] = useState<Record<"artist" | "title", string> | null>(null);
+  const [currentSong, setCurrentSong] = useState<string | null>(null);
   const [previousSongIndex, setPrevSongIndex] = useState<number | null>(null);
   const [isSongChanged, setSongChangeState] = useState<boolean>(false);
 
@@ -57,15 +57,15 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   };
 
   const playSongs = () => {
-    const { artist, title, raw } = songs[getRandomSongIndex()];
+    const songFileName = songs[getRandomSongIndex()].split(/\.mp3/gim).shift() as string;
 
-    audioPlayer.load("/waiting_audios/" + encodeURI(raw), {
+    audioPlayer.load("/waiting_audios/" + encodeURI(songFileName + ".mp3"), {
       onend: () => playSongs(),
       autoplay: true,
       initialVolume: 1
     });
 
-    setCurrentSong({artist, title});
+    setCurrentSong(songFileName);
 
     return;
   };
@@ -242,7 +242,12 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
             {/* now playing */}
             <div className={"nowplaying"} data-changed={currentTime >= ms("10s") && isSongChanged} data-disappear-if={currentTime <= ms("3s")} data-active={currentSong !== null}>
               <h6>Now playing</h6>
-              <p>{currentSong?.artist} - {currentSong?.title?.split(".mp3")?.[0]?.replace(/\꞉/gim, ":")}</p>
+              
+              {
+                currentSong !== null && (
+                  <p>{currentSong.replace(/\꞉/gim, ":")}</p>
+                )
+              }
             </div>
           </div>
         </section>
@@ -262,11 +267,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const rawAudioFilesList = await readdir(path.join(process.cwd(), "public", "waiting_audios"));
 
   const waiting_audios = rawAudioFilesList
-  .filter((file) => file.endsWith(".mp3"))
-  .map((val) => {
-    const [artist, title] = val.split(" - ");
-    return { artist, title, raw: val }
-  });
+  .filter((file) => file.endsWith(".mp3"));
 
   let timeWait = Number(ctx.query?.timewait);
   if (!timeWait || isNaN(timeWait)) {
