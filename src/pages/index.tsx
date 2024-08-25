@@ -19,6 +19,8 @@ export default function Homepage() {
   const audioPlayer = useAudioPlayer();
   const router = useRouter();
 
+  const [windowWidthSize, setWindowWidthSize] = useState<number>(0);
+
   // in minutes
   const [isFinished, setFinishedState] = useState<boolean>(false);
   const [timerStarted, setTimerStartState] = useState<boolean>(false);
@@ -138,6 +140,10 @@ export default function Homepage() {
   }, [initialTime]);
 
   useEffect(() => {
+    if (typeof window !== "undefined" && typeof window?.innerWidth === "number") {
+      setWindowWidthSize(window.innerWidth);
+    };
+    
     // time register
     setTimeout(() => {
       const timeWait = new URLSearchParams(router.asPath.split('?')[1])?.get("timewait");
@@ -224,6 +230,17 @@ export default function Homepage() {
         </section>
 
         <section className={"promotion-video"}>
+          {/* backlay */}
+          {
+            (windowWidthSize <= 1080 && currentPromotionVideo !== null) && (
+              <div className={"promotion-video-underlay"}>
+                <video controls={false} draggable={false} autoPlay={true} loop={false} muted={true} playsInline={true} disablePictureInPicture={true}>
+                  <source src={"/promotion_videos/" + currentPromotionVideo} type="video/mp4"/>
+                </video>
+              </div>
+            )
+          }
+
           {
             currentPromotionVideo !== null && (
               <video onEnded={finishPromotionVideo} controls={false} draggable={false} autoPlay={true} loop={false} muted={false} playsInline={true} disablePictureInPicture={true}>
