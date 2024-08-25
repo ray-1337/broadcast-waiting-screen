@@ -261,7 +261,9 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const rawAudioFilesList = await readdir(path.join(process.cwd(), "public", "waiting_audios"));
 
-  const waiting_audios = rawAudioFilesList.map((val) => {
+  const waiting_audios = rawAudioFilesList
+  .filter((file) => file.endsWith(".mp3"))
+  .map((val) => {
     const [artist, title] = val.split(" - ");
     return { artist, title, raw: val }
   });
