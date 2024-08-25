@@ -23,10 +23,10 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   const [windowWidthSize, setWindowWidthSize] = useState<number>(0);
 
   // in minutes
+  const initialTime = ms(`${props.timeWait}m`);
   const [isFinished, setFinishedState] = useState<boolean>(false);
   const [timerStarted, setTimerStartState] = useState<boolean>(false);
-  const [initialTime, setInitialTime] = useState<number | null>(null)
-  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(initialTime);
   
   // songs
   const songs = props.waiting_audios;
@@ -128,33 +128,10 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
     };
   }, [isSongChanged]);
 
-  // initial time check
-  useEffect(() => {
-    if (initialTime !== null) {
-      // if the timeout is more than 10 minutes, the person who waits will be watching one of my videos :)
-      if (initialTime >= promotionStartInBelowTime) {
-        fetch("/api/promotion_videos", { method: "GET" })
-        .then(x => x.json())
-        .then(x => setPromotionVideos(x));
-      };
-    };
-  }, [initialTime]);
-
   useEffect(() => {
     if (typeof window !== "undefined" && typeof window?.innerWidth === "number") {
       setWindowWidthSize(window.innerWidth);
     };
-    
-    // time register
-    setTimeout(() => {
-      const timeWait = new URLSearchParams(router.asPath.split('?')[1])?.get("timewait");
-      let numTimeWait = timeWait !== null ? ((isNaN(+timeWait) || +timeWait < 1) ? 2 : +timeWait) : 2;
-
-      const initialTime = ms(`${numTimeWait}m`);
-      setInitialTime(initialTime);
-    
-      setTimeout(() => setCurrentTime(initialTime), ms("1s"));
-    }, 2000);
 
     // cleanup
     try {
