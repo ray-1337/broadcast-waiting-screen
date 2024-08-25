@@ -1,7 +1,9 @@
-import { useEffect, useState, Fragment } from "react";
+import type { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { useEffect, useState, Fragment, type FC } from "react";
 import { useAudioPlayer, type AudioPlayer } from 'react-use-audio-player';
-import { useRouter } from "next/router";
 import ms from "ms";
+import { readdir } from "node:fs/promises";
+import path from "node:path";
 
 function getRandomIntInclusive(min: number, max: number) {
   const minCeiled = Math.ceil(min);
@@ -15,9 +17,8 @@ const currentSceneNameAfterAwait: string = "🎮 VALORANT MAIN";
 
 const promotionStartInBelowTime: number = ms("3m");
 
-export default function Homepage() {
+const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
   const audioPlayer = useAudioPlayer();
-  const router = useRouter();
 
   const [windowWidthSize, setWindowWidthSize] = useState<number>(0);
 
@@ -28,13 +29,13 @@ export default function Homepage() {
   const [currentTime, setCurrentTime] = useState<number>(0);
   
   // songs
-  const [songs, setSongs] = useState<Record<"artist" | "title" | "raw", string>[]>([]);
+  const songs = props.waiting_audios;
   const [currentSong, setCurrentSong] = useState<Record<"artist" | "title", string> | null>(null);
   const [previousSongIndex, setPrevSongIndex] = useState<number | null>(null);
   const [isSongChanged, setSongChangeState] = useState<boolean>(false);
 
   // promotion videos
-  const [promotionVideos, setPromotionVideos] = useState<string[]>([]);
+  const promotionVideos = props.promotion_videos;
   const [currentPromotionVideo, setCurrentPromotionVideo] = useState<string | null>(null);
   const [isPromotionPlayed, setPromotionPlayState] = useState<boolean>(false);
   const [isPromotionFinished, setPromotionFinishState] = useState<boolean>(false);
@@ -159,11 +160,6 @@ export default function Homepage() {
     try {
       audioPlayer.cleanup();
     } catch {};
-
-    // songs API
-    fetch("/api/songs", { method: "GET" })
-    .then(x => x.json())
-    .then(x => setSongs(x));
   }, []);
 
   useEffect(() => {
@@ -284,3 +280,31 @@ export default function Homepage() {
     </Fragment>
   );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const rawAudioFilesList = await readdir(path.join(process.cwd(), "public", "waiting_audios"));
+
+  const waiting_audios = rawAudioFilesList.map((val) => {
+    const [artist, title] = val.split(" - ");
+    return { artist, title, raw: val }
+  });
+
+  let timeWait = Number(ctx.query?.timewait);
+  if (!timeWait || isNaN(timeWait)) {
+    timeWait = 2;
+  };
+
+  let promotion_videos: string[] = [];
+  const initialTimeWait = ms(`${timeWait}m`);
+  if (initialTimeWait >= promotionStartInBelowTime) {
+    promotion_videos = await readdir(path.join(process.cwd(), "public", "promotion_videos"));
+  };
+
+  return {
+    props: {
+      waiting_audios, promotion_videos, timeWait
+    }
+  };
+};
+
+export default Homepage;
