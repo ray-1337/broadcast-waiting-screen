@@ -253,11 +253,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
             <div className={"nowplaying"} data-changed={currentTime >= ms("10s") && isSongChanged} data-disappear-if={currentTime <= ms("3s")} data-active={currentSong !== null}>
               <h6>Now playing</h6>
               
-              {
-                currentSong !== null && (
-                  <p>{currentSong.replace(/\꞉/gim, ":")}</p>
-                )
-              }
+              <p>{currentSong}</p>
             </div>
           </div>
         </section>
@@ -280,7 +276,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   ]);
 
   const waiting_audios = rawAudioFilesList
-  .filter((file) => file.endsWith(".mp3"));
+  .filter((file) => file.endsWith(".mp3"))
+  .map((file) => file.replace(/\꞉/gim, ":"));
 
   let timeWait = Number(ctx.query?.timewait);
   if (!timeWait || isNaN(timeWait)) {
