@@ -11,7 +11,7 @@ function getRandomIntInclusive(min: number, max: number) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 };
 
-const waitTitle: string = "A special multi-platform broadcast, presented by ray"
+const waitTitle: string = "A special cross-platform broadcast, presented by ray";
 
 const currentSceneNameAfterAwait: string = "🎮 VALORANT MAIN";
 
