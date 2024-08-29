@@ -1,5 +1,5 @@
 import type { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
-import { useEffect, useState, Fragment, type FC } from "react";
+import { useEffect, useState, Fragment, type VideoHTMLAttributes, type FC } from "react";
 import { useAudioPlayer, type AudioPlayer } from 'react-use-audio-player';
 import ms from "ms";
 import { readdir } from "node:fs/promises";
@@ -188,6 +188,16 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
     };
   }, [songs]);
 
+  let defaultVideoAttribute: VideoHTMLAttributes<HTMLVideoElement> = {
+    autoPlay: true,
+    playsInline: true,
+    disablePictureInPicture: true,
+    disableRemotePlayback: true,
+    preload: "auto",
+    draggable: false,
+    controls: false
+  };
+
   return (
     <Fragment>
       <link rel="preload" href={"/unstabilized_css/index.css"} as={"style"}/>
@@ -207,7 +217,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
           {
             (windowWidthSize <= 1080 && currentPromotionVideo !== null) && (
               <div className={"promotion-video-underlay"}>
-                <video controls={false} draggable={false} autoPlay={true} loop={false} muted={true} playsInline={true} disablePictureInPicture={true}>
+                <video loop={false} muted={true} {...defaultVideoAttribute}>
                   <source src={"/promotion_videos/" + currentPromotionVideo} type="video/mp4"/>
                 </video>
               </div>
@@ -216,7 +226,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 
           {
             currentPromotionVideo !== null && (
-              <video onEnded={finishPromotionVideo} controls={false} draggable={false} autoPlay={true} loop={false} muted={false} playsInline={true} disablePictureInPicture={true}>
+              <video onEnded={finishPromotionVideo} loop={false} muted={false} {...defaultVideoAttribute}>
                 <source src={"/promotion_videos/" + currentPromotionVideo} type="video/mp4"/>
               </video>
             )
@@ -254,7 +264,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 
         {/* video */}
         <section className={"video"}>
-          <video controls={false} draggable={false} autoPlay={true} loop={true} muted={true} playsInline={true} disablePictureInPicture={true}>
+          <video loop={true} muted={true} {...defaultVideoAttribute}>
             <source src={`loading_room_screen_02.mp4?s=${Date.now()}#t=${getRandomIntInclusive(1, 14)}`} type="video/mp4"/>
           </video>
         </section>
