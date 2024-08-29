@@ -65,9 +65,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
       initialVolume: 1
     });
 
-    setCurrentSong(songFileName);
-
-    return;
+    return setCurrentSong(songFileName);
   };
 
   const fadeAudio = (player: AudioPlayer, type: "in" | "out", intervalTime = 50) => {
@@ -90,6 +88,8 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
         player.setVolume(1);
       };
     }, intervalTime);
+
+    return;
   };
 
   const playPromotionVideo = () => {
