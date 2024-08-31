@@ -53,19 +53,20 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
       };
     };
 
-    setPrevSongIndex(newNum);
-
     return newNum;
   };
 
   const playSongs = () => {
-    const songFileName = songs[getRandomSongIndex()].split(/\.mp3/gim).shift() as string;
+    const index = getRandomSongIndex();
+    const songFileName = songs[index].split(/\.mp3/gim).shift() as string;
 
     audioPlayer.load("/waiting_audios/" + encodeURI(songFileName + ".mp3"), {
       onend: () => playSongs(),
       autoplay: true,
       initialVolume: 1
     });
+
+    setPrevSongIndex(index);
 
     return setCurrentSong(songFileName);
   };
@@ -296,8 +297,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   };
 
   const waiting_audios = rawAudioFilesList
-  .filter((file) => file.endsWith(".mp3"))
-  .map((file) => file.replace(/\꞉/gim, ":"));
+  .filter((file) => file.endsWith(".mp3"));
 
   let timeWait = Number(ctx.query?.timewait);
   if (!timeWait || isNaN(timeWait)) {
