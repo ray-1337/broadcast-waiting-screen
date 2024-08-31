@@ -186,7 +186,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
     if (currentTime <= (promotionStartInBelowTime) && !isPromotionPlayed && promotionVideos.length > 0) {
       playPromotionVideo();
       
-      fadeAudio(audioPlayer, "out");
+      fadeAudio(audioPlayer, "out", 25);
       setTimeout(() => audioPlayer.pause(), promotionStartInBelowTime);
     };
 
