@@ -24,7 +24,7 @@
     "@types/obs-studio": "^2.17.2",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18",
-    "eslint": "^9.9.1",
+    "eslint": "^8.57.0",
     "eslint-config-next": "14.2.7",
     "typescript": "^5"
   },
