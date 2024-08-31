@@ -159,11 +159,9 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
         setFinishedState(true);
         audioPlayer.cleanup();
 
-        setTimeout(() => {
-          if (typeof window.obsstudio !== "undefined") {
-            window.obsstudio.setCurrentScene(currentSceneNameAfterAwait);
-          };
-        }, 2000);
+        if (typeof window.obsstudio !== "undefined") {
+          window.obsstudio.setCurrentScene(currentSceneNameAfterAwait);
+        };
       }, 5000);
 
       return;
