@@ -22,9 +22,9 @@ export default function Transition() {
 
   return (
     <Fragment>
-      <link href={`/transition_assets/${sfxFileName}.ogg`} fetchPriority={"high"} as={"audio"} rel={"preload"}/>
-      <link href={`/transition_assets/${pfpFileName}.webp`} fetchPriority={"high"} as={"image"} rel={"preload"}/>
-      <link href={"/transition_assets/index.css"} fetchPriority={"high"} as={"style"} rel={"preload stylesheet"}/>
+      <link href={`/transition_assets/${sfxFileName}.ogg`} as={"audio"} rel={"preload"}/>
+      <link href={`/transition_assets/${pfpFileName}.webp`} as={"image"} rel={"preload"}/>
+      <link href={"/transition_assets/index.css"} as={"style"} rel={"preload stylesheet"}/>
 
       <section className={"transition-root"} data-active={activeState}>
         <div className={"pfp"}>
