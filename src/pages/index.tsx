@@ -16,7 +16,6 @@ const waitTitle: string = "A special cross-platform broadcast, presented by ray"
 const currentSceneNameAfterAwait: string = "🎮 VALORANT MAIN";
 
 const promotionStartInBelowTime: number = ms("3m");
-const promotionStartDelayPrepationTime: number = ms("3s");
 
 const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
   const audioPlayer = useAudioPlayer();
@@ -181,11 +180,13 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
     };
 
     // promotion video
-    if (currentTime <= (promotionStartInBelowTime + promotionStartDelayPrepationTime) && !isPromotionPlayed && promotionVideos.length > 0) {
-      setTimeout(playPromotionVideo, promotionStartDelayPrepationTime);
+    if (currentTime <= (promotionStartInBelowTime) && !isPromotionPlayed && promotionVideos.length > 0) {
+      setPromotionPlayState(true);
+
+      playPromotionVideo();
       
       fadeAudio(audioPlayer, "out");
-      setTimeout(() => audioPlayer.pause(), promotionStartDelayPrepationTime + 2500);
+      setTimeout(() => audioPlayer.pause(), promotionStartInBelowTime);
     };
 
     if (currentTime <= ms("10s") && isPromotionPlayed && !isPromotionFinished) {
