@@ -40,6 +40,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   const [currentPromotionVideo, setCurrentPromotionVideo] = useState<string | null>(null);
   const [isPromotionPlayed, setPromotionPlayState] = useState<boolean>(false);
   const [isPromotionFinished, setPromotionFinishState] = useState<boolean>(false);
+  const promotionVideoComponent = useRef<HTMLVideoElement | null>(null);
 
   const getRandomSongIndex = () => {
     let newNum: number = 0;
