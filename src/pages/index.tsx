@@ -1,5 +1,5 @@
 import type { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
-import { useEffect, useState, Fragment, type VideoHTMLAttributes, type FC } from "react";
+import { useEffect, useState, useRef, Fragment, type VideoHTMLAttributes, type FC } from "react";
 import { useAudioPlayer, type AudioPlayer } from 'react-use-audio-player';
 import ms from "ms";
 import { readdir } from "node:fs/promises";
@@ -102,6 +102,11 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   };
 
   const finishPromotionVideo = () => {
+
+    if (promotionVideoComponent.current !== null) {
+      setTimeout(() => promotionVideoComponent?.current?.pause(), ms("1s"));
+    };
+
     setPromotionFinishState(true);
 
     // ew
@@ -225,7 +230,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 
           {
             currentPromotionVideo !== null && (
-              <video onEnded={finishPromotionVideo} loop={false} muted={false} {...defaultVideoAttribute}>
+              <video ref={promotionVideoComponent} onEnded={finishPromotionVideo} loop={false} muted={false} {...defaultVideoAttribute}>
                 <source src={"/promotion_videos/" + currentPromotionVideo} type="video/mp4"/>
               </video>
             )
