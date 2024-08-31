@@ -24,10 +24,9 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   const [windowWidthSize, setWindowWidthSize] = useState<number>(0);
 
   // in minutes
-  const initialTime = ms(`${props.timeWait}m`);
+  const [currentTime, setCurrentTime] = useState<number>(ms(`${props.timeWait}m`));
   const [isFinished, setFinishedState] = useState<boolean>(false);
   const [timerStarted, setTimerStartState] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(initialTime);
   
   // songs
   const songs = props.waiting_audios;
