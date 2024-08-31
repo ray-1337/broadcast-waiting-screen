@@ -145,6 +145,9 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
     try {
       audioPlayer.cleanup();
     } catch {};
+
+    // play songs
+    setTimeout(() => playSongs(), 1500);
   }, []);
 
   useEffect(() => {
@@ -193,13 +196,6 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
       finishPromotionVideo();
     };
   }, [currentTime]);
-
-  // if songs fetched successfully, play all of them
-  useEffect(() => {
-    if (songs.length > 0) {
-      setTimeout(() => playSongs(), 1500);
-    };
-  }, [songs]);
 
   let defaultVideoAttribute: VideoHTMLAttributes<HTMLVideoElement> = {
     autoPlay: true,
