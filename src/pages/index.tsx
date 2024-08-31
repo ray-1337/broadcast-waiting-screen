@@ -262,13 +262,6 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
             </div>
           </div>
         </section>
-
-        {/* video */}
-        <section className={"video"}>
-          <video loop={true} muted={true} {...defaultVideoAttribute}>
-            <source src={`/loading_room/${props.loadingRoomFootage}?s=${Date.now()}#t=${getRandomIntInclusive(1, 14)}`} type="video/mp4"/>
-          </video>
-        </section>
       </section>
     </Fragment>
   );
@@ -277,10 +270,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const waitingAudiosDirPath = path.join(process.cwd(), "public", "waiting_audios");
 
-  let [rawAudioFilesList, loadingRoomList] = await Promise.all([
-    readdir(waitingAudiosDirPath),
-    readdir(path.join(process.cwd(), "public", "loading_room"))
-  ]);
+  let rawAudioFilesList = await readdir(waitingAudiosDirPath);
 
   // include copyrighted songs (at least content ID'd)
   if (ctx.query?.copyrightSongs === "1") {
@@ -309,8 +299,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   return {
     props: {
-      waiting_audios, promotion_videos, timeWait,
-      loadingRoomFootage: loadingRoomList[0]
+      waiting_audios, promotion_videos, timeWait
     }
   };
 };
