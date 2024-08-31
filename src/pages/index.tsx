@@ -94,6 +94,10 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   };
 
   const playPromotionVideo = () => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("promotion video played");
+    };
+
     const randomPromotionVideo = promotionVideos[getRandomIntInclusive(0, promotionVideos.length - 1)];
 
     setPromotionPlayState(true);
@@ -102,6 +106,9 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   };
 
   const finishPromotionVideo = () => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("promotion video finished");
+    };
 
     if (promotionVideoComponent.current !== null) {
       setTimeout(() => promotionVideoComponent?.current?.pause(), ms("1s"));
