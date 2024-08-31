@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, Fragment, type VideoHTMLAttributes, type F
 import { useAudioPlayer, type AudioPlayer } from 'react-use-audio-player';
 import ms from "ms";
 import { readdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 
 function getRandomIntInclusive(min: number, max: number) {
@@ -276,10 +277,23 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 };
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const [rawAudioFilesList, loadingRoomList] = await Promise.all([
-    readdir(path.join(process.cwd(), "public", "waiting_audios")),
+  const waitingAudiosDirPath = path.join(process.cwd(), "public", "waiting_audios");
+
+  let [rawAudioFilesList, loadingRoomList] = await Promise.all([
+    readdir(waitingAudiosDirPath),
     readdir(path.join(process.cwd(), "public", "loading_room"))
   ]);
+
+  // include copyrighted songs (at least content ID'd)
+  if (ctx.query?.copyrightSongs === "1") {
+    const copyrightedAudiosDirPath = path.join(waitingAudiosDirPath, "copyrighted_audios");
+    if (existsSync(copyrightedAudiosDirPath)) {
+      const copyrightedAudioFilesList = await readdir(copyrightedAudiosDirPath);
+      if (copyrightedAudioFilesList?.length >= 1) {
+        rawAudioFilesList = rawAudioFilesList.concat(copyrightedAudioFilesList);
+      };
+    };
+  };
 
   const waiting_audios = rawAudioFilesList
   .filter((file) => file.endsWith(".mp3"))
