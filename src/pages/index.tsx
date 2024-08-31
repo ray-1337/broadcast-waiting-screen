@@ -240,9 +240,9 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
       </section>
 
       {/* main screen */}
-      <section className={"frontpage"} data-disappear-if={isPromotionPlayed && !isPromotionFinished} data-finished={isFinished} data-started={currentSong !== null}>
+      <section className={"frontpage"} /*data-disappear-if={isPromotionPlayed && !isPromotionFinished}*/ data-finished={isFinished} /*data-started={currentSong !== null}*/>
         {/* transition */}
-        <div className={"transition"} data-active={isFinished}/>
+        {/* <div className={"transition"} data-active={isFinished}/> */}
 
         {/* details */}
         <section className={"details"} data-active={currentSong !== null}>
