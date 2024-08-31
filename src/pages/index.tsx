@@ -69,8 +69,8 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
     return setCurrentSong(songFileName);
   };
 
-  const fadeAudio = (player: AudioPlayer, type: "in" | "out", intervalTime = 50) => {
-    let initialVolume = player.volume;
+  const fadeAudio = (player: AudioPlayer, type: "in" | "out", intervalTime = 50, initialVolumeReplacement?: number) => {
+    let initialVolume = typeof initialVolumeReplacement === "number" ? initialVolumeReplacement : player.volume;
 
     const fade = setInterval(() => {
       if (type === "in") {
@@ -118,9 +118,8 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
 
     // ew
     setTimeout(() => audioPlayer.play(), 1000);
-    setTimeout(() => audioPlayer.setVolume(0), 1002);
-    setTimeout(() => fadeAudio(audioPlayer, "in"), 1005);
-    
+    setTimeout(() => fadeAudio(audioPlayer, "in", undefined, 0), 1010);
+
     return;
   };
 
