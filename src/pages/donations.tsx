@@ -3,7 +3,7 @@ import { useAudioPlayer } from 'react-use-audio-player';
 import io from "socket.io-client";
 import ms from "ms";
 
-const socket = io("https://" + process.env.NEXT_PUBLIC_WS_ENDPOINT, {
+const socket = io("http://" + process.env.NEXT_PUBLIC_WS_ENDPOINT, {
   transports: ["websocket"],
   reconnectionDelay: ms("1s"),
   auth: {
