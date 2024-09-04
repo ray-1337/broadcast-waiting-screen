@@ -1,5 +1,5 @@
 import type { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
-import { useEffect, useState, useRef, Fragment, type VideoHTMLAttributes, type FC } from "react";
+import { useEffect, useState, useRef, type VideoHTMLAttributes, type FC } from "react";
 import { useAudioPlayer, type AudioPlayer } from 'react-use-audio-player';
 import ms from "ms";
 import { readdir } from "node:fs/promises";
@@ -204,7 +204,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   };
 
   return (
-    <Fragment>
+    <section className={"index-root"}>
       <link rel="preload" href={"/unstabilized_css/index.css"} as={"style"}/>
       <link rel="stylesheet" href={"/unstabilized_css/index.css"} as={"style"}/>
       
@@ -263,7 +263,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
           </div>
         </section>
       </section>
-    </Fragment>
+    </section>
   );
 };
 
