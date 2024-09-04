@@ -14,7 +14,7 @@ export default function Transition() {
 
     audioPlayer.load(`/transition_assets/${sfxFileName}.ogg`, {
       autoplay: true,
-      initialVolume: 0.75
+      initialVolume: 0.5
     });
 
     setTimeout(() => setActiveState(false), 1500);
