@@ -17,7 +17,7 @@ export default function Transition() {
       initialVolume: 0.75
     });
 
-    setTimeout(() => setActiveState(true), 1500);
+    setTimeout(() => setActiveState(false), 1500);
   }, []);
 
   return (
