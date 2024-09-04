@@ -5,6 +5,9 @@ const { fetch, Agent } = require("undici");
 const path = require("node:path");
 const { existsSync } = require("node:fs");
 const { readFile } = require("node:fs/promises");
+const { exec } = require("node:child_process");
+const { promisify } = require("util");
+const execSync = promisify(exec);
 
 // obs
 const { OBSWebSocket, EventSubscription } = require("obs-websocket-js");
@@ -32,6 +35,12 @@ const currentPreferredProgramScene = "⏯️ REPLAY";
 
 async function init() {
   try {
+    // Outplayed
+    const taskList = await execSync("tasklist");
+    if (!taskList?.stdout?.match("Outplayed.exe")) {
+      return console.error("No Outplayed found.");
+    };
+
     if (currentlyShowing === true) {
       const currentProgramScene = await obs.call("GetCurrentProgramScene");
       
