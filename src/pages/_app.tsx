@@ -1,9 +1,7 @@
 import { Fragment } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-
 import "normalize.css";
-import "../styles/fonts.css";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
