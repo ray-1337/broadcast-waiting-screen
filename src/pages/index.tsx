@@ -14,7 +14,7 @@ function getRandomIntInclusive(min: number, max: number) {
 
 const waitTitle: string = "A special cross-platform broadcast, presented by ray";
 
-const currentSceneNameAfterAwait: string = "🎮 VALORANT MAIN";
+export const currentSceneNameAfterAwait: string = "🎮 VALORANT MAIN";
 
 const promotionStartInBelowTime: number = ms("3m");
 
