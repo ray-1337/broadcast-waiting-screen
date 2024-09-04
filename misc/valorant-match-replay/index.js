@@ -58,7 +58,11 @@ async function init() {
 
         console.log("OBS connected.");
       } catch (error) {
-        console.error(error);
+        if (String(error).match("ECONNREFUSED")) {
+          console.error("No OBS starting.");
+        } else {
+          console.error(error);
+        };
       };
     };
 
