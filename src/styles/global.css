@@ -1,0 +1,6 @@
+html, body {
+  background: transparent !important;
+  user-select: none;
+  pointer-events: none;
+  overflow: hidden;
+}
