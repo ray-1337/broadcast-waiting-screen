@@ -113,7 +113,9 @@ async function init() {
 
     // it begins here.
     const session = decodedSelfData?.sessionLoopState;
-    if (session === "MATCHMAKING") {
+    const partyState = decodedSelfData?.partyState;
+
+    if (partyState === "MATCHMAKING") {
       await postTimeCurrentRound();
     };
 
