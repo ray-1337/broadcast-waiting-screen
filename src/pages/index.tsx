@@ -153,7 +153,7 @@ const Homepage: FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (pr
   useEffect(() => {
     // time out, change scene
     if (currentTime <= ms("4s") && timerStarted === true) {
-      fadeAudio(audioPlayer, "out", 30);
+      fadeAudio(audioPlayer, "out", 50);
 
       setTimeout(() => {
         setFinishedState(true);
